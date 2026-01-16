@@ -5,7 +5,7 @@ from tkinter import scrolledtext, PhotoImage
 import os
 import queue
 
-# ------------------- CONFIG MOTORISTAS -------------------
+
 opcoes = {
     "Joao": {"veiculo": "Master", "placa": "FLX4G76"},
     "Edinei": {"veiculo": "Master", "placa": "QOY1H23"},
@@ -29,7 +29,7 @@ opcoes = {
 processo = None
 fila_logs = queue.Queue()
 
-# ------------------- FUNÇÕES -------------------
+
 def executar_script():
     global processo
     ID = entrada_id.get()
@@ -39,13 +39,13 @@ def executar_script():
     jaimpresso = jaimpresso_var.get()
 
     if not pedidos.strip() or motorista == "Selecione":
-        fila_logs.put("⚠ Preencha os pedidos e selecione um motorista\n")
+        fila_logs.put("Preencha os pedidos e selecione um motorista\n")
         return
 
     veiculo = opcoes[motorista]["veiculo"]
     placa = opcoes[motorista]["placa"]
 
-    fila_logs.put("🚚 Rodando automação com:\n")
+    fila_logs.put("Rodando automação com:\n")
     fila_logs.put(f"ID: {ID}\nPedidos: {pedidos}\nVeículo: {veiculo}\nPlaca: {placa}\nMotorista: {motorista}\nData: {data}\nJá impresso: {jaimpresso}\n\n")
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -69,10 +69,10 @@ def cancelar_script():
     global processo
     if processo and processo.poll() is None:
         processo.terminate()
-        fila_logs.put("⛔ Operação cancelada pelo usuário!\n")
+        fila_logs.put("Operação cancelada pelo usuário!\n")
         processo = None
     else:
-        fila_logs.put("⚠ Nenhum processo em execução para cancelar.\n")
+        fila_logs.put("Nenhum processo em execução para cancelar.\n")
 
 
 def limpar_log():
@@ -87,13 +87,12 @@ def atualizar_log():
     janela.after(200, atualizar_log)
 
 
-# ------------------- INTERFACE -------------------
 janela = tk.Tk()
 janela.title("Automação de Pedidos - SOS Restaurante")
 janela.geometry("950x750")
 janela.configure(bg="#ecf0f1")
 
-# ------------------- FUNDO -------------------
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 bg_path = os.path.join(BASE_DIR, "sosfundo.png")
 if os.path.exists(bg_path):
@@ -101,13 +100,13 @@ if os.path.exists(bg_path):
     bg_label = tk.Label(janela, image=bg_img)
     bg_label.place(relwidth=1, relheight=1)
 
-# ------------------- CABEÇALHO -------------------
+
 header_path = os.path.join(BASE_DIR, "soscabecalho.png")
 if os.path.exists(header_path):
     header_img = PhotoImage(file=header_path)
     tk.Label(janela, image=header_img, bd=0).pack(fill="x")
 
-# ------------------- FRAME DE INPUTS -------------------
+
 frame_inputs = tk.Frame(janela, bg="#ffffff", bd=3, relief="groove", padx=15, pady=15)
 frame_inputs.pack(pady=20, padx=20)
 
@@ -130,7 +129,7 @@ add_label(2, "Motorista:")
 motorista_var = tk.StringVar(janela)
 motorista_var.set("Selecione")
 
-# Frame para OptionMenu + botão Motorista
+
 frame_motorista = tk.Frame(frame_inputs, bg="#ffffff")
 frame_motorista.grid(row=2, column=1, pady=5, sticky="w")
 
@@ -150,7 +149,7 @@ jaimpresso_var.set("NAO")
 menu_jaimpresso = tk.OptionMenu(frame_inputs, jaimpresso_var, "SIM", "NAO")
 menu_jaimpresso.grid(row=4, column=1, pady=5, sticky="w")
 
-# ------------------- FRAME DE BOTOES -------------------
+
 frame_botoes = tk.Frame(janela, bg="#ecf0f1")
 frame_botoes.pack(pady=15)
 
@@ -159,23 +158,24 @@ def estilizar_botao(botao, cor_normal, cor_hover):
     botao.bind("<Enter>", lambda e: botao.config(bg=cor_hover))
     botao.bind("<Leave>", lambda e: botao.config(bg=cor_normal))
 
-btn_executar = tk.Button(frame_botoes, text="▶ Executar Automação", command=executar_script)
-btn_cancelar = tk.Button(frame_botoes, text="⛔ Cancelar", command=cancelar_script)
-btn_limpar = tk.Button(frame_botoes, text="🧹 Limpar Log", command=limpar_log)
+btn_executar = tk.Button(frame_botoes, text="Executar Automação", command=executar_script)
+btn_cancelar = tk.Button(frame_botoes, text="Cancelar", command=cancelar_script)
+btn_limpar = tk.Button(frame_botoes, text="Limpar Log", command=limpar_log)
 
 btn_executar.grid(row=0, column=0, padx=10)
 btn_cancelar.grid(row=0, column=1, padx=10)
 btn_limpar.grid(row=0, column=2, padx=10)
 
-# Aplica estilos
+
 estilizar_botao(btn_executar, "#27ae60", "#2ecc71")
 estilizar_botao(btn_cancelar, "#c0392b", "#e74c3c")
 estilizar_botao(btn_limpar, "#2980b9", "#3498db")
 
-# ------------------- LOG -------------------
+
 log = scrolledtext.ScrolledText(janela, width=95, height=18, font=("Courier New", 9), bd=2, relief="sunken", bg="#fdfdfd")
 log.pack(pady=15)
 
-# ------------------- LOOP -------------------
+
 atualizar_log()
 janela.mainloop()
+
